@@ -1,42 +1,55 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Scanner in = new Scanner(new BufferedReader(new InputStreamReader(System.in)));
+    public static void main(String[] args) throws FileNotFoundException {
 
-        int testCases = in.nextInt();
+        File file = new File("/Users/andytaber/A-large-practice.in");
+
+        Scanner in = new Scanner(file);
+
+        int testCases = Integer.parseInt(in.nextLine());
+
+        ArrayList<Integer> switchesPerTestCase = new ArrayList<>();
 
         for(int i = 0; i < testCases; i++) {
             // Identify number of search engines
-            int numberSearchEngines = in.nextInt();
+            int numberSearchEngines = Integer.parseInt(in.nextLine());
 
             // Store those search engines in a Set
             Set<String> searchEngines = new HashSet<>();
 
             for(int j = 0; j < numberSearchEngines; j++) {
-                searchEngines.add(in.next());
+                searchEngines.add(in.nextLine());
             }
 
             // Identify number of Queries
-            int numQueries = in.nextInt();
+            int numQueries = Integer.parseInt(in.nextLine());
 
             // Store those queries in an ArrayList
             ArrayList<String> queries = new ArrayList<>();
 
             for(int k = 0; k < numQueries; k++) {
-                queries.add(in.next());
+                queries.add(in.nextLine());
             }
 
             // Compute least number of switches needed
             int leastSwitches = computeLeastSwitches(searchEngines, queries);
 
+            System.out.println(leastSwitches);
+
+            switchesPerTestCase.add(leastSwitches);
+
 
         }
 
+        int caseNumber = 1;
+        for (int numSwitches : switchesPerTestCase) {
+            System.out.println("Case #" + caseNumber + ": " + numSwitches);
+            caseNumber++;
+        }
 
     }
 
@@ -50,19 +63,15 @@ public class Main {
             tempCheckNumPlacesMap.put(searchEngine, 0);
         }
 
-
         int primaryIndex = 0;
 
-        while (primaryIndex < queries.size()) {
+        while (primaryIndex < queries.size() - 1) {
 
             for(String searchEngine : searchEngines) {
 
-                ListIterator iterator = queries.listIterator(primaryIndex);
                 int i = 0;
 
-                while (!iterator.equals(searchEngine) && iterator.hasNext()) {
-
-                    iterator.next();
+                while (!queries.get(i + primaryIndex).equals(searchEngine) && (primaryIndex + i + 1 < queries.size())) {
                     i++;
                 }
 
@@ -79,11 +88,12 @@ public class Main {
 
             primaryIndex += largestRun;
 
-            if (primaryIndex < queries.size()) {
+            if (primaryIndex < queries.size() - 1) {
                 switches++;
             }
         }
 
+        System.out.println(tempCheckNumPlacesMap);
         return switches;
 
     }
